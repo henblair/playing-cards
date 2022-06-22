@@ -4,10 +4,7 @@ import com.tlglearning.playingcards.model.Card;
 import com.tlglearning.playingcards.model.Deck;
 import com.tlglearning.playingcards.model.Suit;
 
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.Random;
+import java.util.*;
 
 import static com.tlglearning.playingcards.model.Suit.*;
 import static com.tlglearning.playingcards.model.Suit.Color.*;
@@ -67,17 +64,44 @@ public class CardTrick {
     public void tally() {
         int redCount = 0;
         int blackCount = 0;
-        for (Card card: blackPile) {
+        for (Card card : blackPile) {
             if (card.getSuit().getColor() == BLACK) {
                 blackCount++;
             }
         }
-        for (Card card: redPile) {
+        for (Card card : redPile) {
             if (card.getSuit().getColor() == RED) {
                 redCount++;
             }
         }
-        System.out.printf("Black: count=%d, cards=%s%n",blackCount,blackPile);
-        System.out.printf("Red: count=%d, cards=%s%n",redCount,redPile);
+        Comparator<Card> comparator = (card1,card2) -> {
+            int comparison = card1.getSuit().getColor().compareTo(card2.getSuit().getColor());
+            comparison = (comparison!=0)?comparison:card1.getSuit().compareTo(card2.getSuit());
+            comparison=(comparison!=0)?comparison:card1.getRank().compareTo(card2.getRank());
+            return comparison;
+        };
+
+        ((LinkedList<Card>) blackPile).sort(comparator);
+        ((LinkedList<Card>) redPile).sort(comparator);
+        System.out.printf("Black: count=%d, cards=%s%n", blackCount, blackPile);
+        System.out.printf("Red: count=%d, cards=%s%n", redCount, redPile);
     }
 }
+//        Comparator<Card> comparator = new Comparator<>() {
+//            @Override
+//            public int compare(Card card1, Card card2) {
+//                int comparison = card1.getSuit().getColor().compareTo(card2.getSuit().getColor());
+//                comparison = (comparison != 0) ? comparison : card1.getSuit().compareTo(card2.getSuit());
+//                comparison = (comparison != 0) ? comparison : card1.getRank().compareTo(card2.getRank());
+//                return comparison;
+//            }
+//        };
+//        Collections.sort((LinkedList<Card>) blackPile, new Comparator<>() {
+//            @Override
+//            public int compare(Card card1, Card card2) {
+//                int comparison = card1.getSuit().getColor().compareTo(card2.getSuit().getColor());
+//                comparison = (comparison!=0)?comparison:card1.getSuit().compareTo(card2.getSuit());
+//                comparison=(comparison!=0)?comparison:card1.getRank().compareTo(card2.getRank());
+//                return comparison;
+//            }
+//        });
